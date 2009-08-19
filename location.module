@@ -39,7 +39,6 @@ function location_menu() {
     'description' => 'Settings for Location module',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('location_admin_settings'),
-    'file' => 'location.admin.inc',
     'access arguments' => array('administer site configuration'),
   );
   $items['admin/settings/location/main'] = array(
@@ -51,7 +50,6 @@ function location_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('location_map_link_options_form'),
     'access arguments' => array('administer site configuration'),
-    'file' => 'location.admin.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => 1,
   );
@@ -60,7 +58,6 @@ function location_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('location_geocoding_options_form'),
     'access arguments' => array('administer site configuration'),
-    'file' => 'location.admin.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => 2,
   );
@@ -75,7 +72,6 @@ function location_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('location_util_form'),
     'access arguments' => array('administer site configuration'),
-    'file' => 'location.admin.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => 3,
   );

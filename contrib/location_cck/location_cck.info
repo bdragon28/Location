@@ -1,0 +1,7 @@
+; $Id: location_cck.info,v 1.4 2009/01/06 19:34:47 bdragon Exp $
+name = Location CCK
+description = Defines a Location field type.
+core = 6.x
+package = CCK
+dependencies[] = location
+dependencies[] = content

@@ -95,7 +95,10 @@ function location_api_variant() {
  */
 function location_perm() {
   return array(
-    'submit latitude/longitude',
+    'submit latitude/longitude' => array(
+      'title' => t('Submit Latitude / Longitude'),
+      'description' => t('Allow the user to submit raw coordinates.'),
+    ),
   );
 }
 

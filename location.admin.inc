@@ -75,7 +75,7 @@ function location_map_link_options_form() {
 
   $form['countries'] = array(
     '#type' => 'markup',
-    '#value' => ''
+    '#markup' => ''
   );
 
   foreach (_location_supported_countries() as $country_iso => $country_name) {
@@ -83,12 +83,12 @@ function location_map_link_options_form() {
 
     $form['countries'][$country_iso] = array(
       '#type' => 'markup',
-      '#value' => ''
+      '#markup' => ''
     );
 
     $form['countries'][$country_iso]['label_'. $country_iso] = array(
       '#type' => 'markup',
-      '#value' => $country_name
+      '#markup' => $country_name
     );
 
     // Set up '#options' array for mapping providers for the current country
@@ -114,7 +114,7 @@ function location_map_link_options_form() {
     else {
       $form['countries'][$country_iso]['location_map_link_'. $country_iso] = array(
         '#type' => 'markup',
-        '#value' => t('None supported.')
+        '#markup' => t('None supported.')
       );
     }
   }
@@ -191,7 +191,7 @@ function location_geocoding_options_form() {
     else {
       $form['countries'][$country_iso]['location_geocode_'. $country_iso] = array(
         '#type' => 'markup',
-        '#value' => t('None supported.')
+        '#markup' => t('None supported.')
       );
     }
 
@@ -199,7 +199,7 @@ function location_geocoding_options_form() {
     if ($current_value == 'none') {
       $form['countries'][$country_iso]['location_geocode_config_link_'. $country_iso] = array(
         '#type' => 'markup',
-        '#value' => t('No service selected for country.')
+        '#markup' => t('No service selected for country.')
       );
     }
     else {
@@ -210,19 +210,19 @@ function location_geocoding_options_form() {
       if (function_exists($geocode_settings_form_function_specific)) {
         $form['countries'][$country_iso]['location_geocode_config_link_'. $country_iso] = array(
           '#type' => 'markup',
-          '#value' => l(t('Configure parameters'), 'admin/settings/location/geocoding/'. $country_iso .'/'. $current_val_chopped)
+          '#markup' => l(t('Configure parameters'), 'admin/settings/location/geocoding/'. $country_iso .'/'. $current_val_chopped)
         );
       }
       elseif (function_exists($geocode_settings_form_function_general)) {
         $form['countries'][$country_iso]['location_geocode_config_link_'. $country_iso] = array(
           '#type' => 'markup',
-          '#value' => l(t('Configure parameters'), 'admin/settings/location/geocoding/'. $country_iso .'/'. $current_value)
+          '#markup' => l(t('Configure parameters'), 'admin/settings/location/geocoding/'. $country_iso .'/'. $current_value)
         );
       }
       else {
         $form['countries'][$country_iso]['location_geocode_config_link_'. $country_iso] = array(
           '#type' => 'markup',
-          '#value' => t('No configuration necessary for selected service.')
+          '#markup' => t('No configuration necessary for selected service.')
         );
       }
     }

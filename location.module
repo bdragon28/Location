@@ -323,7 +323,7 @@ function _location_expand_location($element) {
       '#type' => 'markup',
       '#weight' => 1,
       '#prefix' => '<div class=\'description\'>',
-      '#value' => '<br /><br />' . t('If you wish to supply your own latitude and longitude, you may enter them above.  If you leave these fields blank, the system will attempt to determine a latitude and longitude for you from the entered address.  To have the system recalculate your location from the address, for example if you change the address, delete the values for these fields.'),
+      '#markup' => '<br /><br />' . t('If you wish to supply your own latitude and longitude, you may enter them above.  If you leave these fields blank, the system will attempt to determine a latitude and longitude for you from the entered address.  To have the system recalculate your location from the address, for example if you change the address, delete the values for these fields.'),
       '#suffix' => '</div>',
       );
     if (function_exists('gmap_get_auto_mapid') && variable_get('location_usegmap', FALSE)) {
@@ -366,7 +366,7 @@ function _location_expand_location($element) {
         '#type' => 'markup',
         '#weight' => 2,
         '#prefix' => '<div class=\'description\'>',
-        '#value' => t('You may set the location by clicking on the map, or dragging the location marker.  To clear the location and cause it to be recalculated, click on the marker.'),
+        '#markup' => t('You may set the location by clicking on the map, or dragging the location marker.  To clear the location and cause it to be recalculated, click on the marker.'),
         '#suffix' => '</div>',
       );
     }
@@ -742,7 +742,7 @@ function location_geocoding_parameters_form(&$form_state, $country_iso, $service
   else {
     return system_settings_form(array(
       '#type' => 'markup',
-      '#value' => t('No configuration parameters are necessary, or a form to take such paramters has not been implemented.')
+      '#markup' => t('No configuration parameters are necessary, or a form to take such paramters has not been implemented.')
     ));
   }
 }
@@ -1697,7 +1697,7 @@ function location_display($settings, $locations) {
   // Show all locations
   return array(
     '#type' => 'markup',
-    '#value' => theme('locations', $locations, $hide),
+    '#markup' => theme('locations', $locations, $hide),
     '#weight' => $settings['display']['weight'],
   );
 }

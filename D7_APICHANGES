@@ -1,0 +1,2 @@
+To use location_rss_item, you must now
+  require_once(drupal_get_path('module', 'location') .'/location.georss.inc');

@@ -1682,8 +1682,3 @@ function location_display($settings, $locations) {
     '#weight' => $settings['display']['weight'],
   );
 }
-
-function location_rss_item($location, $mode = 'simple') {
-  require_once(drupal_get_path('module', 'location') .'/location.georss.inc');
-  return _location_rss_item($location, $mode);
-}

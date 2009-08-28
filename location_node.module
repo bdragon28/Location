@@ -10,7 +10,7 @@
  * Implementation of hook_form_alter().
  */
 function location_node_form_alter(&$form, &$form_state, $form_id) {
-  if (isset($form['type']['#value']) && $form['type']['#value'] .'_node_form' == $form_id) {
+  if (!empty($form['#node_edit_form'])) {
     // Add the Location fields on the Node edit form
     $node = $form['#node'];
     $settings = variable_get('location_settings_node_'. $node->type, array());

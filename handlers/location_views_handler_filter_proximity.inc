@@ -1,5 +1,5 @@
 <?php
-// $Id: location_views_handler_filter_proximity.inc,v 1.3 2008/12/03 22:51:23 bdragon Exp $
+// $Id: location_views_handler_filter_proximity.inc,v 1.4 2009/08/31 22:09:35 bdragon Exp $
 
 /**
  * General proximity filter for location latitude/longitude.

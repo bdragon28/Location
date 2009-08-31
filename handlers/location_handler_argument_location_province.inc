@@ -1,5 +1,5 @@
 <?php
-// $Id: location_handler_argument_location_province.inc,v 1.1 2008/09/16 18:23:09 bdragon Exp $
+// $Id: location_handler_argument_location_province.inc,v 1.2 2009/08/31 22:09:35 bdragon Exp $
 
 /**
  * Argument handler to accept a province code or name.

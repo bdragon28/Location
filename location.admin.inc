@@ -1,5 +1,5 @@
 <?php
-// $Id: location.admin.inc,v 1.20 2009/04/17 19:09:53 bdragon Exp $
+// $Id: location.admin.inc,v 1.21 2009/08/31 22:09:34 bdragon Exp $
 
 /**
  * @file

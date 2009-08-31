@@ -137,6 +137,7 @@ function location_elements() {
       '#attributes' => array('class' => 'location'),
       // Element level validation.
       '#element_validate' => array('location_element_validate'),
+      '#theme' => 'location_element',
     ),
     'location_settings' => array(
       '#input' => TRUE,
@@ -144,6 +145,7 @@ function location_elements() {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#tree' => TRUE,
+      '#theme' => 'location_settings',
     ),
   );
 }

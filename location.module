@@ -800,14 +800,24 @@ function location_save_locations(&$locations, $criteria) {
     }
 
     $newlids = array();
-    $query = db_insert('location_instance')->fields(array_merge(array_keys($criteria), array('lid')));
+    $query = db_insert('location_instance')->fields(array('nid', 'vid', 'uid', 'genid', 'lid'));
     foreach ($locations as $location) {
       // Don't save "empty" locations.
       // location_save() explicitly returns FALSE for empty locations,
       // so it should be ok to rely on the data type.
       if ($location['lid'] !== FALSE) {
         $newlids[] = $location['lid'];
-        $query->values($location);
+        $instance = array(
+          'nid' => 0,
+          'vid' => 0,
+          'uid' => 0,
+          'genid' => '',
+          'lid' => $location['lid'],
+        );
+        foreach ($criteria as $k => $v) {
+          $instance[$k] = $v;
+        }
+        $query->values($instance);
       }
     }
     $query->execute();

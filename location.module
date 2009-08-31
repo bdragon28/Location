@@ -134,7 +134,7 @@ function location_elements() {
       '#tree' => TRUE,
       '#location_settings' => array(),
       '#required' => FALSE,
-      '#attributes' => array('class' => 'location'),
+      '#attributes' => array('class' => array('location')),
       // Element level validation.
       '#element_validate' => array('location_element_validate'),
       '#theme' => 'location_element',
@@ -314,7 +314,7 @@ function _location_expand_location($element) {
       '#title' => t('Latitude'),
       '#default_value' => isset($element['#default_value']['locpick']['user_latitude']) ? $element['#default_value']['locpick']['user_latitude'] : '',
       '#size' => 16,
-      '#attributes' => array('class' => 'container-inline'),
+      '#attributes' => array('class' => array('container-inline')),
       '#maxlength' => 20,
     );
     $element['locpick']['user_longitude'] = array(
@@ -391,7 +391,7 @@ function _location_expand_location($element) {
   return $element;
 }
 
-function _location_expand_location_settings(&$element) {
+function _location_expand_location_settings($element) {
   // Set a value for the fieldset that doesn't interfere with rendering and doesn't generate a warning.
   $element['#tree'] = TRUE;
   $element['#theme'] = 'location_settings';
@@ -478,19 +478,19 @@ function theme_location_settings($element) {
   unset($element['country']['collect']['#options'][0]);
 
   foreach (element_children($element) as $key) {
-    $element[$key]['weight']['#attributes']['class'] = 'location-settings-weight';
+    $element[$key]['weight']['#attributes']['class'] = array('location-settings-weight');
     unset($element[$key]['default']['#title']);
     $row = array();
-    $row[] = array('data' => '', 'class' => 'location-settings-drag');
+    $row[] = array('data' => '', 'class' => array('location-settings-drag'));
     $row[] = drupal_render($element[$key]['name']);
     $row[] = drupal_render($element[$key]['collect']);
     $row[] = drupal_render($element[$key]['default']);
-    $row[] = array('data' => drupal_render($element[$key]['weight']), 'class' => 'delta-order');
+    $row[] = array('data' => drupal_render($element[$key]['weight']), 'class' => array('delta-order'));
 
     $rows[] = array(
       '#weight' => (int)$element[$key]['weight']['#value'],
       'data' => $row,
-      'class' => 'draggable',
+      'class' => array('draggable'),
     );
   }
 
@@ -646,7 +646,7 @@ function location_locationapi(&$obj, $op, $a3 = NULL, $a4 = NULL, $a5 = NULL) {
             '#maxlength' => 64,
             '#description' => NULL,
             // Used by province autocompletion js.
-            '#attributes' => array('class' => 'location_auto_province'),
+            '#attributes' => array('class' => array('location_auto_province')),
             '#required' => ($a4 == 2),
           );
 
@@ -668,7 +668,7 @@ function location_locationapi(&$obj, $op, $a3 = NULL, $a4 = NULL, $a5 = NULL) {
               '#description'    => NULL,
               '#required'       => ($a4 == 2),
               // Used by province autocompletion js.
-              '#attributes'     => array('class' => 'location_auto_country'),
+              '#attributes'     => array('class' => array('location_auto_country')),
             );
           }
           break;

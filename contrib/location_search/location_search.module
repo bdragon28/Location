@@ -202,7 +202,7 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
     $form['advanced']['province'] = array(
       '#type' => 'textfield',
       '#title' => t('State/Province'),
-      '#autocomplete_path' => 'location/autocomplete/'. variable_get('location_default_country', 'us'),
+      '#autocomplete_path' => 'location/autocomplete/'. variable_get('site_default_country', 'us'),
       // Used by province autocompletion js.
       '#attributes' => array('class' => 'location_auto_province'),
     );

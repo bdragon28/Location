@@ -26,9 +26,9 @@ function location_uninstall() {
   variable_del('location_locpick_macro');
 
   // Delete geocoder settings.
-  $result = db_query("SELECT name FROM {variable} WHERE name LIKE 'location_geocode_%'");
-  while ($row = db_fetch_object($result)) {
-    variable_del($row->name);
+  $result = db_query("SELECT name FROM {variable} WHERE name LIKE 'location_geocode_%'")->fetchCol();
+  foreach ($result as $var) {
+    variable_del($var);
   }
 }
 
@@ -1121,3 +1121,16 @@ function location_update_6308() {
   }
   return $ret;
 }
+
+/**
+ * 7.x update 1
+ */
+/*
+function location_update_7000() {
+  $ret = array();
+  // This went away because core now has site_default_country.
+  variable_del('location_default_country');
+
+  return $ret;
+}
+*/

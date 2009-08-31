@@ -162,7 +162,7 @@ class location_views_handler_filter_proximity extends views_handler_filter {
     if ($this->options['type'] == 'postal' || $this->options['type'] == 'postal_default') {
       // Force default for country.
       if ($this->options['type'] == 'postal_default') {
-        $this->value['country'] = variable_get('location_default_country', 'us');
+        $this->value['country'] = variable_get('site_default_country', 'us');
       }
 
       // Zip code lookup.

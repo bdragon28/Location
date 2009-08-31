@@ -1,0 +1,5 @@
+To use location_rss_item, you must now
+  require_once(drupal_get_path('module', 'location') .'/location.georss.inc');
+
+There is no more 'location_default_country' variable. Use 'site_default_country' instead.
+@@@ Make an api function instead of calling variable_get all over the place!

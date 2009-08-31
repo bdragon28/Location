@@ -10,7 +10,7 @@
  * Implementation of hook_form_alter().
  */
 function location_node_form_alter(&$form, &$form_state, $form_id) {
-  if (isset($form['type']['#value']) && $form['type']['#value'] .'_node_form' == $form_id) {
+  if (!empty($form['#node_edit_form'])) {
     // Add the Location fields on the Node edit form
     $node = $form['#node'];
     $settings = variable_get('location_settings_node_'. $node->type, array());
@@ -22,57 +22,88 @@ function location_node_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Implementation of hook_nodeapi().
+ * Implementation of hook_node_delete_revision().
  */
-function location_node_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-  switch ($op) {
-    case 'delete revision':
-      $locations = array();
-      location_save_locations($locations, array('vid' => $node->vid));
-      break;
-    case 'delete':
-      $locations = array();
-      location_save_locations($locations, array('nid' => $node->nid));
-      break;
-    case 'load':
-      $locations = location_load_locations($node->vid);
-      $location = count($locations) ? $locations[0] : array();
-      return array('locations' => $locations, 'location' => $location);
+function location_node_node_delete_revision($node) {
+  $locations = array();
+  location_save_locations($locations, array('vid' => $node->vid));
+}
 
-    case 'insert':
-    case 'update':
-      if (!empty($node->locations)) {
-        location_save_locations($node->locations, array('nid' => $node->nid, 'vid' => $node->vid));
-      }
-      break;
+/**
+ * Implementation of hook_node_delete().
+ */
+function location_node_node_delete($node) {
+  $locations = array();
+  location_save_locations($locations, array('nid' => $node->nid));
+}
 
-    case 'view':
-      if (variable_get('location_display_location', 1)) {
-        $settings = variable_get('location_settings_node_'. $node->type, array());
-        if (isset($settings['display']['teaser']) && isset($settings['display']['full'])) {
-          if (($a3 && $settings['display']['teaser']) || (!$a3 && $settings['display']['full'])) {
-            $node->content['locations'] = location_display($settings, $node->locations);
-          }
-        }
-      }
-      break;
-
-    case 'rss item':
-      $items = array();
-      $settings = variable_get('location_settings_node_'. $node->type, array());
-      $mode = isset($settings['rss']['mode']) ? $settings['rss']['mode'] : 'simple';
-      if ($mode == 'none') {
-        return;
-      }
-      if (is_array($node->locations)) {
-        foreach ($node->locations as $location) {
-          if (($item = location_rss_item($location, $mode))) {
-            $items[] = $item;
-          }
-        }
-      }
-      return $items;
+/**
+ * Implementation of hook_node_load().
+ */
+function location_node_node_load($nodes, $types) {
+  // @@@ Resurrect the behavior from way back (1.x/2.x) that disabled existing
+  // locations when the content type wasn't enabled for locations?
+  // @@@TODO 7.x -- multiload version!
+  foreach (array_keys($nodes) as $nid) {
+    $nodes[$nid]->locations = location_load_locations($nodes[$nid]->vid);
+    // @@@TODO 7.x -- Either reimplement or cut $node->location.
   }
+}
+
+/**
+ * Implementation of hook_node_insert().
+ */
+function location_node_node_insert($node) {
+  if (!empty($node->locations)) {
+    location_save_locations($node->locations, array('nid' => $node->nid, 'vid' => $node->vid));
+  }
+}
+
+/**
+ * Implementation of hook_node_update().
+ */
+function location_node_node_update($node) {
+  return location_node_node_insert($node);
+}
+
+/**
+ * Implementation of hook_node_view().
+ */
+function location_node_node_view($node, $build_mode) {
+  // @@@TODO 7.x Switch to a pure "fields" approach?
+  if (empty($node->locations)) {
+    return;
+  }
+
+  // @@@TODO 7.x -- TEST THIS!
+  if ($build_mode == 'rss') {
+    $settings = variable_get('location_settings_node_'. $node->type, array());
+    $mode = isset($settings['rss']['mode']) ? $settings['rss']['mode'] : 'simple';
+    if ($mode == 'none') {
+      return;
+    }
+    if (is_array($node->locations) && !empty($node->locations)) {
+      require_once(drupal_get_path('module', 'location') .'/location.georss.inc');
+      $node->rss_namespaces += location_rss_namespaces($mode);
+      foreach ($node->locations as $location) {
+        if (($item = location_rss_item($location, $mode))) {
+            $node->rss_elements[] = $item;
+        }
+      }
+    }
+  }
+  else {
+    // @@@TODO 7.x -- location_display_location is idiotic. KILL IT.
+    if (variable_get('location_display_location', 1)) {
+      $settings = variable_get('location_settings_node_'. $node->type, array());
+      if (isset($settings['display']['teaser']) && isset($settings['display']['full'])) {
+        if (($a3 && $settings['display']['teaser']) || (!$a3 && $settings['display']['full'])) {
+          $node->content['locations'] = location_display($settings, $node->locations);
+        }
+      }
+    }
+  }
+
 }
 
 /**
@@ -106,6 +137,7 @@ function location_node_form_node_type_form_alter(&$form, &$form_state) {
 
   $settings = variable_get('location_settings_node_'. $type, array());
   $form['location_settings'] = location_settings($settings);
+  $form['location_settings']['#group'] = 'additional_settings';
 
   // Tack on customizations for node settings.
   $form['location_settings']['display']['teaser'] = array(

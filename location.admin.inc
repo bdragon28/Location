@@ -261,10 +261,7 @@ function theme_location_map_link_options(&$form) {
     $rows[] = $row;
   }
   $output = theme('table', $header, $rows);
-  foreach (element_children($form) as $key) {
-    $output .= drupal_render($form[$key]);
-  }
-  $output .= drupal_render($form);
+  $output .= drupal_render_children($form);
   return $output;
 }
 
@@ -289,10 +286,7 @@ function theme_location_geocoding_options(&$form) {
     $rows[] = $row;
   }
   $output = theme('table', $header, $rows);
-  foreach (element_children($form) as $key) {
-    $output .= drupal_render($form[$key]);
-  }
-  $output .= drupal_render($form);
+  $output .= drupal_render_children($form);
   return $output;
 }
 

@@ -387,7 +387,7 @@ function _location_expand_location($element) {
     );
   }
 
-  $element += _element_info('fieldset');
+  $element += element_info('fieldset');
   return $element;
 }
 

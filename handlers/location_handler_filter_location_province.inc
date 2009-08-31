@@ -67,7 +67,7 @@ class location_handler_filter_location_province extends views_handler_filter {
   }
 
   function grovel_country() {
-    $country = variable_get('location_default_country', 'us');
+    $country = variable_get('site_default_country', 'us');
     if (!empty($this->view->filter))
     foreach ($this->view->filter as $k => $v) {
       if ($v->table == 'location' && $v->field == 'country' && $v->options['relationship'] == $this->options['relationship']) {
@@ -82,7 +82,7 @@ class location_handler_filter_location_province extends views_handler_filter {
     }
     if ($country == '' || $country == 'All' || $country == '  ' || $country == 'xx') {
       // It's set to something nonsensical, reset to the default to prevent malfunctions.
-      $country = variable_get('location_default_country', 'us');
+      $country = variable_get('site_default_country', 'us');
     }
     $this->location_country = $country;
     return $country;

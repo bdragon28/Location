@@ -1121,3 +1121,16 @@ function location_update_6308() {
   }
   return $ret;
 }
+
+/**
+ * 7.x update 1
+ */
+/*
+function location_update_7000() {
+  $ret = array();
+  // This went away because core now has site_default_country.
+  variable_del('location_default_country');
+
+  return $ret;
+}
+*/

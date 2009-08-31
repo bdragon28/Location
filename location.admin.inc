@@ -21,13 +21,10 @@ function location_admin_settings() {
   $iso_list_sorted = array_merge(array('' => ''), $iso_list_sorted);
 
   $form  = array();
-  $form['location_default_country'] = array(
-    '#type'           => 'select',
-    '#title'          => t('Default country selection'),
-    '#default_value'  => variable_get('location_default_country', 'us'),
-    '#options'        => $iso_list_sorted,
-    '#description'    => t('This will be the country that is automatically selected when a location form is served for a new location.')
-  );
+
+  // @@@TODO 7.x -- Verify integrity of site_default_country and direct user
+  // to the appropriate place to change it if necessary.
+
   $form['location_display_location'] = array(
     '#type'           => 'radios',
     '#title'          => t('Toggle location display'),

@@ -13,7 +13,7 @@ class location_handler_argument_location_province extends views_handler_argument
       $country = $this->view->argument['country']->argument;
     }
     else {
-      $country = variable_get('location_default_country', 'us');
+      $country = variable_get('site_default_country', 'us');
     }
     return location_province_name($country, $this->argument);
   }
@@ -28,7 +28,7 @@ class location_handler_argument_location_province extends views_handler_argument
       $country = $this->view->argument['country']->argument;
     }
     else {
-      $country = variable_get('location_default_country', 'us');
+      $country = variable_get('site_default_country', 'us');
     }
 
     return location_province_name($country, $value);

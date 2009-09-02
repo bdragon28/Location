@@ -91,7 +91,7 @@ function location_api_variant() {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implement hook_perm().
  */
 function location_perm() {
   return array(
@@ -188,6 +188,10 @@ function location_theme() {
     'location_geocoding_options' => array('arguments' => array('form')),
     'location_element' => array('arguments' => array('element')),
     'location_distance' => array('template' => 'location_distance', 'arguments' => array('distance' => 0, 'units' => 'km')),
+
+    'location_collect_table' => array(
+      'arguments' => array('element' => NULL),
+    ),
 
     // Field formatters
     'field_formatter_location_default' => array(
@@ -561,6 +565,19 @@ function location_locationapi(&$obj, $op, $a3 = NULL, $a4 = NULL, $a5 = NULL) {
 
     case 'virtual fields':
       return array('province_name' => t('Province name'), 'country_name' => t('Country name'), 'map_link' => t('Map link'), 'coords' => t('Coordinates'));
+
+    case 'collect default':
+      return array(
+        'name' => array('collect' => 1, 'weight' => 2),
+        'street'      => array('collect' => 1, 'weight' => 4),
+        'additional'  => array('collect' => 1, 'weight' => 6),
+        'city'        => array('collect' => 0, 'weight' => 8),
+        'province'    => array('collect' => 0, 'weight' => 10),
+        'postal_code' => array('collect' => 0, 'weight' => 12),
+        'country'     => array('collect' => 1, 'weight' => 14), // @@@ Fix weight?
+        // @@@TODO 7.x -- Move this to a widget type? -- "Table input", "Map only", "Table input and map"
+        'locpick'     => array('collect' => 1, 'weight' => 20),
+      );
 
     case 'defaults':
       return array(
@@ -1756,7 +1773,7 @@ function location_field_info() {
       'label' => t('Location'),
       'description' => t('This field stores a Location.'), // @@@
       'settings' => array(
-        'location_settings' => array(),
+        'collect' => array(),
         'gmap_macro' => '[gmap ]',
         'gmap_marker' => 'drupal',
       ),
@@ -1793,20 +1810,51 @@ function location_field_schema($field) {
 function location_field_settings_form($field, $instance) {
   $settings = $field['settings'];
 
-  $form['location_settings'] = location_settings($settings);
+  $form['collect'] = array(
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#theme' => 'location_collect_table',
+  );
+  //$form['location_settings'] = location_settings($settings);
 
-  // Multiple is handled by CCK.
-  unset ($form['location_settings']['multiple']);
-  // CCK handles weight, and collapsibility is not changeable.
-  unset ($form['location_settings']['form']['weight']);
-  unset ($form['location_settings']['form']['collapsible']);
-  unset ($form['location_settings']['form']['collapsed']);
-  unset ($form['location_settings']['display']['weight']);
 
-  // We want to see the settings, so uncollapse them.
-  $form['location_settings']['#collapsible'] = FALSE;
-  $form['location_settings']['form']['#collapsed'] = FALSE;
-  $form['location_settings']['display']['#collapsed'] = FALSE;
+  $fields = location_field_names();
+  // Options for fields.
+  $options = array(
+    0 => t('Do not collect'),
+    1 => t('Allow'),
+    2 => t('Require'),
+    4 => t('Force Default'),
+  );
+
+  $collect = location_invoke_locationapi($fields, 'collect default');
+  // Merge defaults with current settings field by field.
+  foreach ($collect as $field => $data) {
+    $temp = isset($settings['collect'][$field]) ? $settings['collect'][$field] : array();
+    $collect[$field] = array_merge($data, $temp);
+  }
+
+  foreach ($fields as $field => $title) {
+    $form['collect'][$field] = array(
+      '#type' => 'fieldset',
+      '#tree' => TRUE,
+    );
+    $form['collect'][$field]['name'] = array(
+      '#type' => 'item',
+      '#markup' => $title,
+    );
+    $form['collect'][$field]['collect'] = array(
+      '#type' => 'select',
+      '#default_value' => $collect[$field]['collect'],
+      '#options' => $options,
+    );
+
+    $form['collect'][$field]['weight'] = array(
+      '#type' => 'weight',
+      '#delta' => 100,
+      '#default_value' => $collect[$field]['weight'],
+    );
+  }
 
   // Add some GMap settings, if GMap is enabled.
   if (module_exists('gmap')) {
@@ -2209,4 +2257,41 @@ function location_elements_process($element, $form_state, $form) {
   }
   */
   return $element;
+}
+
+function theme_location_collect_table($element) {
+  $rows = array();
+  $header = array(
+    array(
+      'data' => t('Name'),
+      'colspan' => 2,
+    ),
+    t('Collect'),
+    t('Weight')
+  );
+
+  foreach (element_children($element) as $key) {
+    $element[$key]['weight']['#attributes']['class'] = array('location-settings-weight');
+    $row = array();
+    $row[] = array('data' => '', 'class' => array('location-settings-drag'));
+    $row[] = drupal_render($element[$key]['name']);
+    $row[] = drupal_render($element[$key]['collect']);
+    $row[] = array('data' => drupal_render($element[$key]['weight']), 'class' => array('delta-order'));
+
+    $rows[] = array(
+      '#weight' => (int)$element[$key]['weight']['#value'],
+      'data' => $row,
+      'class' => array('draggable'),
+    );
+  }
+
+  uasort($rows, 'element_sort');
+  foreach ($rows as $k => $v) {
+    unset($rows[$k]['#weight']);
+  }
+
+  drupal_add_tabledrag('location-settings-table', 'order', 'sibling', 'location-settings-weight');
+
+  $output = theme('table', $header, $rows, array('id' => 'location-settings-table'));
+  return $output;
 }

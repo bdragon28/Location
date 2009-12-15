@@ -91,9 +91,9 @@ function location_api_variant() {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implement hook_permission().
  */
-function location_perm() {
+function location_permission() {
   return array(
     'submit latitude/longitude' => array(
       'title' => t('Submit Latitude / Longitude'),

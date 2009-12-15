@@ -1,0 +1,492 @@
+<?php
+// $Id: text.module,v 1.25 2009/08/27 00:33:52 webchick Exp $
+
+/**
+ * @file
+ * Defines simple text field types.
+ */
+
+/**
+ * Implement hook_theme().
+ */
+function location_fieldapi_theme() {
+  return array(
+/*    'text_textarea' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'text_textfield' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'field_formatter_text_default' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'field_formatter_text_plain' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'field_formatter_text_trimmed' => array(
+      'arguments' => array('element' => NULL),
+    ), */
+    // Widget
+    'location_fieldapi_location' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'field_formatter_location_default' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'field_formatter_location' => array(
+      'arguments' => array('element' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implement hook_field_info().
+ *
+ * Field settings:
+ *   - max_length: the maximum length for a varchar field.
+ * Instance settings:
+ *   - text_processing: whether text input filters should be used.
+ *   - display_summary: whether the summary field should be displayed.
+ *     When empty and not displayed the summary will take its value from the
+ *     trimmed value of the main text field.
+ */
+function location_fieldapi_field_info() {
+  return array(
+    'location' => array(
+      'label' => t('Location'),
+      'description' => t('This field stores a Location.'), // @@@
+      'settings' => array('max_length' => 255), // @@@
+      'instance_settings' => array('text_processing' => 0), // @@@
+      'default_widget' => 'location_fieldapi_location',
+      'default_formatter' => 'location_default',
+    ),
+  );
+}
+
+/**
+ * Implement hook_field_schema().
+ */
+function location_fieldapi_field_schema($field) {
+  $columns = array(
+    'lid' => array(
+      'type' => 'int',
+      'not null' => FALSE,
+    ),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => array(
+      'lid' => array('lid'),
+    ),
+  );
+}
+
+/**
+ * Implement hook_field_settings_form().
+ */
+function location_fieldapi_field_settings_form($field, $instance) {
+  $settings = $field['settings'];
+
+/*  $form['max_length'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Maximum length'),
+    '#default_value' => $settings['max_length'],
+    '#required' => FALSE,
+    '#description' => t('The maximum length of the field in characters. Leave blank for an unlimited size.'),
+    '#element_validate' => array('_element_validate_integer_positive'),
+  );
+*/
+
+  return $form;
+}
+
+/**
+ * Implement hook_field_instance_settings_form().
+ */
+function location_fieldapi_field_instance_settings_form($field, $instance) {
+  $settings = $instance['settings'];
+  $form = array();
+/*
+  $form['text_processing'] = array(
+    '#type' => 'radios',
+    '#title' => t('Text processing'),
+    '#default_value' => $settings['text_processing'],
+    '#options' => array(
+      t('Plain text'),
+      t('Filtered text (user selects input format)'),
+    ),
+  );
+  if ($field['type'] == 'text_with_summary') {
+    $form['display_summary'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Summary input'),
+      '#default_value' => $settings['display_summary'],
+      '#description' => t('This allows authors to input an explicit summary, to be displayed instead of the automatically trimmed text when using the "Summary or trimmed" display format.'),
+    );
+  }
+*/
+  return $form;
+}
+
+/**
+ * Implement hook_field_validate().
+ *
+ * Possible error codes:
+ * - 'text_value_max_length': The value exceeds the maximum length.
+ * - 'text_summary_max_length': The summary exceeds the maximum length.
+ */
+function location_fieldapi_field_validate($obj_type, $object, $field, $instance, $langcode, $items, &$errors) {
+  /*
+  foreach ($items as $delta => $item) {
+    foreach (array('value' => t('full text'), 'summary' => t('summary')) as $column => $desc) {
+      if (!empty($item[$column])) {
+        if (!empty($field['settings']['max_length']) && drupal_strlen($item[$column]) > $field['settings']['max_length']) {
+          switch ($column) {
+            case 'value':
+              $message = t('%name: the text may not be longer than %max characters.', array('%name' => $instance['label'], '%max' => $field['settings']['max_length']));
+              break;
+            case 'summary':
+              $message = t('%name: the summary may not be longer than %max characters.', array('%name' => $instance['label'], '%max' => $field['settings']['max_length']));
+              break;
+          }
+          $errors[$field['field_name']][$langcode][$delta][] = array(
+            'error' => "text_{$column}_length",
+            'message' => $message,
+          );
+        }
+      }
+    }
+  }
+  */
+}
+
+/**
+ * Implement hook_field_load().
+ *
+ * Where possible, generate the sanitized version of each field early so that
+ * it is cached in the field cache. This avoids looking up from the filter cache
+ * separately.
+ * @see text_field_sanitize().
+ */
+function location_fieldapi_field_load($obj_type, $objects, $field, $instances, $langcode, &$items) {
+  foreach ($objects as $id => $object) {
+    foreach ($items[$id] as $delta => $item) {
+      $items[$id][$delta] = location_load_location($item['lid']);
+    }
+  }
+}
+
+/**
+ * Implement hook_field_sanitize().
+ *
+ * @see text_field_load()
+ */
+function location_fieldapi_field_sanitize($obj_type, $object, $field, $instance, $langcode, &$items) {
+  /*
+  foreach ($items as $delta => $item) {
+    // Only sanitize items which were not already processed inside
+    // text_field_load(), i.e. items with uncacheable text formats, or coming
+    // from a form preview.
+    if (!isset($items[$delta]['safe'])) {
+      if (!empty($instance['settings']['text_processing'])) {
+        $format = $item['format'];
+        $items[$delta]['safe'] = isset($item['value']) ? check_markup($item['value'], $format, $langcode) : '';
+        if ($field['type'] == 'text_with_summary') {
+          $items[$delta]['safe_summary'] = isset($item['summary']) ? check_markup($item['summary'], $format, $langcode) : '';
+        }
+      }
+      else {
+        $items[$delta]['safe'] = check_plain($item['value']);
+        if ($field['type'] == 'text_with_summary') {
+          $items[$delta]['safe_summary'] = check_plain($item['summary']);
+        }
+      }
+    }
+  }
+  */
+}
+
+/**
+ * Implement hook_field_is_empty().
+ */
+function location_fieldapi_field_is_empty($item, $field) {
+  $fields = array();
+  if (location_is_empty($item, $fields)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implement hook_field_formatter_info().
+ */
+function location_fieldapi_field_formatter_info() {
+  return array(
+    'location_default' => array(
+      'label' => t('Default'),
+      'field types' => array('location'),
+    ),
+  );
+}
+
+/**
+ * Theme function for 'default' text field formatter.
+ */
+function theme_field_formatter_location_defaultaaaa($element) {
+  return 'TESTING';
+  //return $element['#item']['safe'];
+}
+
+
+/**
+ * Theme function for 'summary or trimmed' field formatter for
+ * text_with_summary fields.  This formatter returns the summary
+ * element of the field or, if the summary is empty, the trimmed
+ * version of the full element of the field.
+ */
+/*
+function theme_field_formatter_text_summary_or_trimmed($element) {
+  $field = field_info_field($element['#field_name']);
+  $instance = field_info_instance($element['#field_name'], $element['#bundle']);
+
+  if (!empty($element['#item']['safe_summary'])) {
+    return $element['#item']['safe_summary'];
+  }
+  else {
+    $size = variable_get('teaser_length_' . $element['#bundle'], 600);
+    return text_summary($element['#item']['safe'], $instance['settings']['text_processing'] ? $element['#item']['format'] : NULL, $size);
+  }
+}
+*/
+
+/**
+ * Implement hook_field_widget_info().
+ *
+ * Here we indicate that the field module will handle
+ * the default value and multiple values for these widgets.
+ *
+ * Callbacks can be omitted if default handing is used.
+ * They're included here just so this module can be used
+ * as an example for custom modules that might do things
+ * differently.
+ */
+function location_fieldapi_field_widget_info() {
+  return array(
+    'location' => array(
+      'label' => t('Table'),
+      'field types' => array('location'),
+//      'settings' => array('size' => 60),
+    ),
+/*    'text_textarea' => array(
+      'label' => t('Text area (multiple rows)'),
+      'field types' => array('text_long'),
+      'settings' => array('rows' => 5),
+    ),
+    'text_textarea_with_summary' => array(
+      'label' => t('Text area with a summary'),
+      'field types' => array('text_with_summary'),
+      'settings' => array('rows' => 20, 'summary_rows' => 5),
+    ),*/
+  );
+}
+
+/**
+ * Implement hook_field_widget_settings_form().
+ */
+function location_fieldapi_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+  $form = array();
+/*
+  if ($widget['type'] == 'text_textfield') {
+    $form['size'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Size of textfield'),
+      '#default_value' => $settings['size'],
+      '#required' => TRUE,
+      '#element_validate' => array('_element_validate_integer_positive'),
+    );
+  }
+  else {
+    $form['rows'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Rows'),
+      '#default_value' => $settings['rows'],
+      '#required' => TRUE,
+      '#element_validate' => array('_element_validate_integer_positive'),
+    );
+  }
+*/
+  return $form;
+}
+
+/**
+ * Implement FAPI hook_elements().
+ *
+ * Any FAPI callbacks needed for individual widgets can be declared here,
+ * and the element will be passed to those callbacks for processing.
+ *
+ * Drupal will automatically theme the element using a theme with
+ * the same name as the hook_elements key.
+ *
+ * Autocomplete_path is not used by text_field_widget but other
+ * widgets can use it (see nodereference and userreference).
+ */
+function location_fieldapi_elements() {
+  return array(
+    'location' => array(
+      '#input' => TRUE,
+      '#columns' => array('lid'), '#delta' => 0,
+      '#process' => array('location_fieldapi_elements_process'),
+      '#theme_wrappers' => array('text_textfield'),
+      '#autocomplete_path' => FALSE,
+    ),
+/*    'text_textarea' => array(
+      '#input' => TRUE,
+      '#columns' => array('value', 'format'), '#delta' => 0,
+      '#process' => array('text_textarea_elements_process'),
+      '#theme_wrappers' => array('text_textarea'),
+      '#filter_value' => FILTER_FORMAT_DEFAULT,
+    ),
+    'text_textarea_with_summary' => array(
+      '#input' => TRUE,
+      '#columns' => array('value', 'format', 'summary'), '#delta' => 0,
+      '#process' => array('text_textarea_with_summary_process'),
+      '#theme_wrappers' => array('text_textarea'),
+      '#filter_value' => FILTER_FORMAT_DEFAULT,
+    ),*/
+  );
+}
+
+/**
+ * Implement hook_field_widget().
+ *
+ * Attach a single form element to the form. It will be built out and
+ * validated in the callback(s) listed in hook_elements. We build it
+ * out in the callbacks rather than here in hook_field_widget so it can be
+ * plugged into any module that can provide it with valid
+ * $field information.
+ *
+ * Field module will set the weight, field name and delta values
+ * for each form element.
+ *
+ * If there are multiple values for this field, the field module will
+ * call this function as many times as needed.
+ *
+ * @param $form
+ *   the entire form array, $form['#node'] holds node information
+ * @param $form_state
+ *   the form_state, $form_state['values'][$field['field_name']]
+ *   holds the field's form values.
+ * @param $field
+ *   The field structure.
+ * @param $instance
+ *   the field instance array
+ * @param $langcode
+ *   The language associated to $items.
+ * @param $items
+ *   array of default values for this field
+ * @param $delta
+ *   the order of this item in the array of subelements (0, 1, 2, etc)
+ *
+ * @return
+ *   the form item for a single element for this field
+ */
+function location_fieldapi_field_widget(&$form, &$form_state, $field, $instance, $langcode, $items, $delta = 0) {
+  /*
+  $element = array(
+    '#type' => $instance['widget']['type'],
+    '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
+  );
+  if (!empty($instance['settings']['text_processing'])) {
+    $element['#value_callback'] = 'text_field_widget_formatted_text_value';
+  }*/
+
+  $element = array(
+    '#type' => 'markup',
+    '#markup' => 'WORKS',
+  );
+
+  return $element;
+}
+
+/**
+ * Implement hook_field_widget_error().
+ */
+function location_fieldapi_field_widget_error($element, $error) {
+  // @@@
+  switch ($error['error']) {
+    case 'text_summary_max_length':
+      $error_element = $element[$element['#columns'][1]];
+      break;
+
+    default:
+      $error_element = $element[$element['#columns'][0]];
+      break;
+  }
+
+  form_error($error_element, $error['message']);
+}
+
+/**
+ * Process an individual element.
+ *
+ * Build the form element. When creating a form using FAPI #process,
+ * note that $element['#value'] is already set.
+ *
+ * The $field and $instance arrays are in $form['#fields'][$element['#field_name']].
+ *
+ * TODO: For widgets to be actual FAPI 'elements', reusable outside of a
+ * 'field' context, they shoudn't rely on $field and $instance. The bits of
+ * information needed to adjust the behavior of the 'element' should be
+ * extracted in hook_field_widget() above.
+ */
+function location_fieldapi_elements_process($element, $form_state, $form) {
+  /*
+  $field = $form['#fields'][$element['#field_name']]['field'];
+  $instance = $form['#fields'][$element['#field_name']]['instance'];
+  $field_key = $element['#columns'][0];
+  $delta = $element['#delta'];
+
+  $element[$field_key] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($element['#value'][$field_key]) ? $element['#value'][$field_key] : NULL,
+    '#autocomplete_path' => $element['#autocomplete_path'],
+    '#size' => $instance['widget']['settings']['size'],
+    '#attributes' => array('class' => array('text')),
+    '#title' => $element['#title'],
+    '#description' => $element['#description'],
+    '#required' => $element['#required'],
+  );
+
+  $element[$field_key]['#maxlength'] = !empty($field['settings']['max_length']) ? $field['settings']['max_length'] : NULL;
+
+  if (!empty($instance['settings']['text_processing'])) {
+    $filter_key  = (count($element['#columns']) == 2) ? $element['#columns'][1] : 'format';
+    $format = isset($element['#value'][$filter_key]) ? $element['#value'][$filter_key] : FILTER_FORMAT_DEFAULT;
+    $element[$field_key]['#text_format'] = $format;
+  }
+  */
+  return $element;
+}
+
+/**
+ * FAPI theme for an individual text elements.
+ *
+ * The textfield or textarea is already rendered by the
+ * textfield or textarea themes and the html output
+ * lives in $element['#children']. Override this theme to
+ * make custom changes to the output.
+ *
+ * $element['#field_name'] contains the field name
+ * $element['#delta] is the position of this element in the group
+ */
+/*
+function theme_text_textfield($element) {
+  return $element['#children'];
+}
+
+function theme_text_textarea($element) {
+  return $element['#children'];
+}
+*/

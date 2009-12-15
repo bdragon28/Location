@@ -1799,7 +1799,7 @@ function location_field_info() {
         'gmap_marker' => 'drupal',
       ),
       'instance_settings' => array(
-        'default_location' => array(),
+//        'default_location' => array(),
       ),
       'default_widget' => 'location_fieldapi_location',
       'default_formatter' => 'location_default',
@@ -2053,6 +2053,7 @@ function location_field_sanitize($obj_type, $object, $field, $instance, $langcod
  * Implement hook_field_is_empty().
  */
 function location_field_is_empty($item, $field) {
+  watchdog('DEBUG', 'EMPTYCHECK');
   $fields = array();
   if (location_is_empty($item, $fields)) {
     return TRUE;
@@ -2146,6 +2147,11 @@ function location_field_widget_info() {
     'location' => array(
       'label' => t('Direct entry (Table)'),
       'field types' => array('location'),
+      'settings' => array(),
+      /*'behaviors' => array(
+        // Support a composite... oh wait, nevermind..
+        'multiple values' => FIELD_BEHAVIOR_CUSTOM,
+      ),*/
 //      'settings' => array('size' => 60),
     ),
 /*    'text_textarea' => array(
@@ -2229,6 +2235,7 @@ function location_field_widget(&$form, &$form_state, $field, $instance, $langcod
   $element = array(
     '#type' => $instance['widget']['type'],
     '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
+    '#value_callback' => 'location_widget_value_callback',
   );
 //  if (!empty($instance['settings']['text_processing'])) {
 //    $element['#value_callback'] = 'text_field_widget_formatted_text_value';
@@ -2546,4 +2553,38 @@ function theme_location_collect_table($element) {
 
   $output = theme('table', $header, $rows, array('id' => 'location-settings-table'));
   return $output;
+}
+
+
+/**
+ * Helper function to determine the value for a formatted text widget.
+ *
+ * '#text_format' puts the format in '[column 0]_format' in incoming values,
+ * while we need it in '[column 1]'.
+ */
+function location_widget_value_callback($form, $edit = FALSE) {
+  watchdog('TEST', var_export($edit, TRUE));
+  echo '<pre>';
+  var_export($form);
+  echo '</pre><hr /><pre>';
+  var_export($edit);
+  echo '</pre>';
+  if ($edit !== FALSE) {
+    $field_key = $form['#columns'][0];
+    $filter_key = (count($form['#columns']) == 2) ? $form['#columns'][1] : 'format';
+    $default_key = $field_key . '_format';
+    // The format selector uses #access = FALSE if only one format is
+    // available. In this case, we don't receive its value, and need to
+    // manually set it.
+    $edit['format'] = !empty($edit[$default_key]) ? $edit[$default_key] : filter_resolve_format(FILTER_FORMAT_DEFAULT);
+    unset($edit[$default_key]);
+    return $edit;
+  }
+}
+
+function location_field_insert($obj_type, $object, $field, $instance, $langcode, &$items) {
+  $foo = func_get_args();
+  watchdog('DEBUG', var_export($foo, TRUE));
+
+
 }

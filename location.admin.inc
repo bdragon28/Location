@@ -154,12 +154,12 @@ function location_geocoding_options_form() {
 
     $form['countries'][$country_iso] = array(
       '#type' => 'markup',
-      '#value' => ''
+      '#markup' => ''
     );
 
     $form['countries'][$country_iso]['label_'. $country_iso] = array(
       '#type' => 'markup',
-      '#value' => '<div id="'. $country_iso .'">'. $country_name .'</div>'
+      '#markup' => '<div id="'. $country_iso .'">'. $country_name .'</div>'
     );
 
     // Next, we look for options presented by country specific providers
@@ -266,7 +266,8 @@ function theme_location_map_link_options(&$data) {
   return $output;
 }
 
-function theme_location_geocoding_options(&$form) {
+function theme_location_geocoding_options(&$data) {
+  $form = $data['form'];
   $header = array(
     array('align' => 'center', 'data' => '<center>'. t('Country') .'</center>'),
     array('align' => 'center', 'data' => '<center>'. t('Options') .'</center>'),

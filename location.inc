@@ -552,7 +552,7 @@ function location_get_general_geocoder_list() {
   static $list;
 
   if (!count($list)) {
-    $files = file_scan_directory(drupal_get_path('module', 'location') .'/geocoding', '\.inc$', array('.', '..', 'CVS', '.svn'));
+    $files = file_scan_directory(drupal_get_path('module', 'location') .'/geocoding', '/\.inc$/', array('nomask' => '/(\.\.?|CVS|\.svn)$/'));
     foreach ($files as $full_path_name => $fileinfo) {
       $list[] = $fileinfo->name;
     }

@@ -1,5 +1,5 @@
 <?php
-// $Id: location.hk.inc,v 1.6 2008/01/24 09:00:03 bdragon Exp $
+// $Id$
 
 // Hong Kong
 

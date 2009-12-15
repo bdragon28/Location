@@ -1,5 +1,5 @@
 <?php
-// $Id: location_testcase.php,v 1.6 2009/07/30 20:53:48 bdragon Exp $
+// $Id$
 
 /**
  * @file

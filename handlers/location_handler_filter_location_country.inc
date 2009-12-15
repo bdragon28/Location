@@ -1,5 +1,5 @@
 <?php
-// $Id: location_handler_filter_location_country.inc,v 1.3 2008/12/02 22:50:21 bdragon Exp $
+// $Id$
 
 /**
  * Filter on country.

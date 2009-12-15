@@ -1,5 +1,5 @@
 <?php
-// $Id: location.ca.inc,v 1.11 2008/03/08 22:25:39 bdragon Exp $
+// $Id$
 
 function location_province_list_ca() {
   return array(

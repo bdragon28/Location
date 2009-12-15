@@ -1,5 +1,5 @@
 <?php
-// $Id: location.er.inc,v 1.7 2008/07/07 19:14:54 bdragon Exp $
+// $Id$
 
 // Eritrea
 

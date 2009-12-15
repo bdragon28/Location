@@ -1,5 +1,5 @@
 <?php
-// $Id: location_search.admin.inc,v 1.3 2008/10/09 22:09:05 bdragon Exp $
+// $Id$
 
 /**
  * @file

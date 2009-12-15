@@ -1,4 +1,4 @@
-; $Id: location_addanother.info,v 1.4 2009/02/25 20:50:17 bdragon Exp $
+; $Id$
 name = Location Add Another
 description = Allows you to quickly add locations directly from a node without having to click 'edit' first.
 dependencies[] = location

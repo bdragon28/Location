@@ -1,5 +1,5 @@
 <?php
-// $Id: location.inc,v 1.99 2009/08/31 22:09:34 bdragon Exp $
+// $Id$
 
 /**
  * @defgroup Location Location: An API for working with locations.

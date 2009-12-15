@@ -1,5 +1,5 @@
 <?php
-// $Id: location.la.inc,v 1.7 2009/02/04 20:06:38 bdragon Exp $
+// $Id$
 
 // Lao People's Democratic Republic
 

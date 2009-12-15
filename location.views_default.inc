@@ -1,5 +1,5 @@
 <?php
-// $Id: location.views_default.inc,v 1.5 2008/10/22 17:28:48 bdragon Exp $
+// $Id$
 
 /**
  * @file

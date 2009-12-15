@@ -1,5 +1,5 @@
 <?php
-// $Id: location_handler_argument_location_country.inc,v 1.1 2008/09/16 18:23:09 bdragon Exp $
+// $Id$
 
 /**
  * Argument handler to accept a country code or name.

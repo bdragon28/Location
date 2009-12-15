@@ -1,5 +1,5 @@
 <?php
-// $Id: location.au.inc,v 1.9 2008/07/25 14:54:11 bdragon Exp $
+// $Id$
 
 // Australia
 

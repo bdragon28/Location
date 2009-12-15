@@ -1,5 +1,5 @@
 <?php
-// $Id: geocoder_api_keys.inc,v 1.1 2009/02/24 20:20:08 bdragon Exp $
+// $Id$
 
 /**
  * @file

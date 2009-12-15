@@ -1,5 +1,5 @@
 <?php
-// $Id: location.cn.inc,v 1.7 2009/06/29 14:23:30 bdragon Exp $
+// $Id$
 
 // China
 

@@ -1,4 +1,4 @@
-; $Id: location_node.info,v 1.2 2009/08/31 22:09:35 bdragon Exp $
+; $Id$
 name = Node Locations
 description = Associate locations with nodes.
 dependencies[] = location

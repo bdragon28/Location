@@ -1,5 +1,5 @@
 <?php
-// $Id: location.gs.inc,v 1.6 2008/01/24 09:00:03 bdragon Exp $
+// $Id$
 
 // South Georgia and the South Sandwich Islands
 

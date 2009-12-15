@@ -1,4 +1,4 @@
-; $Id: location_cck.info,v 1.4 2009/01/06 19:34:47 bdragon Exp $
+; $Id$
 name = Location CCK
 description = Defines a Location field type.
 core = 6.x

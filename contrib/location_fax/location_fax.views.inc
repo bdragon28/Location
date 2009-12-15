@@ -1,5 +1,5 @@
 <?php
-// $Id: location_fax.views.inc,v 1.1 2008/09/29 20:31:20 bdragon Exp $
+// $Id$
 
 /**
  * @file

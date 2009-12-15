@@ -1,5 +1,5 @@
 <?php
-// $Id: location_handler_filter_location_province.inc,v 1.3 2009/08/31 22:09:35 bdragon Exp $
+// $Id$
 
 /**
  * Filter on province.

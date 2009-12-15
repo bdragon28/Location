@@ -1,5 +1,5 @@
 <?php
-// $Id: earth.inc,v 1.10 2008/05/20 22:55:25 bdragon Exp $
+// $Id$
 
 /**
  * License clarification:

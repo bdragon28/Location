@@ -1,5 +1,5 @@
 <?php
-// $Id: location_handler_field_location_distance.inc,v 1.3 2009/01/21 21:41:10 bdragon Exp $
+// $Id$
 
 /**
  * @file

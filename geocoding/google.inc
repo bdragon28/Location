@@ -1,5 +1,5 @@
 <?php
-// $Id: google.inc,v 1.14 2009/06/29 14:09:22 bdragon Exp $
+// $Id$
 
 /**
  * @file

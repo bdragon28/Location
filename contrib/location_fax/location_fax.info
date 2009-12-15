@@ -1,4 +1,4 @@
-; $Id: location_fax.info,v 1.5 2008/09/10 21:23:08 bdragon Exp $
+; $Id$
 name = Location Fax
 package = Location
 description = Allows you to add a fax number to a location.

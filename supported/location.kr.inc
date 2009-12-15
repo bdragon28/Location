@@ -1,5 +1,5 @@
 <?php
-// $Id: location.kr.inc,v 1.6 2008/01/24 09:00:03 bdragon Exp $
+// $Id$
 
 // Korea, Republic Of (South Korea)
 

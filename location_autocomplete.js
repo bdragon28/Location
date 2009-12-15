@@ -1,4 +1,4 @@
-// $Id: location_autocomplete.js,v 1.3 2008/12/02 22:50:21 bdragon Exp $
+// $Id$
 
 /**
  * Twiddle the province autocomplete whenever the user changes the country.

@@ -247,7 +247,8 @@ function location_geocoding_options_form_submit($form, &$form_state) {
   variable_set('location_general_geocoders_in_use', $general_geocoders_in_use);
 }
 
-function theme_location_map_link_options(&$form) {
+function theme_location_map_link_options(&$data) {
+  $form = $data['form'];
   $header = array(array('align' => 'center', 'data' => '<center>'. t('Country') .'</center>'), array('align' => 'center', 'data' => '<center>'. t('Options') .'</center>'));
   $rows = array();
   foreach (element_children($form['countries']) as $country_iso) {
@@ -260,7 +261,7 @@ function theme_location_map_link_options(&$form) {
     );
     $rows[] = $row;
   }
-  $output = theme('table', $header, $rows);
+  $output = theme('table', array('header' => $header, 'rows' => $rows));
   $output .= drupal_render_children($form);
   return $output;
 }
@@ -285,7 +286,7 @@ function theme_location_geocoding_options(&$form) {
     );
     $rows[] = $row;
   }
-  $output = theme('table', $header, $rows);
+  $output = theme('table', array('header' => $header, 'rows' => $rows));
   $output .= drupal_render_children($form);
   return $output;
 }

@@ -174,7 +174,7 @@ function location_theme() {
     ),
     'location_latitude_dms' => array('arguments' => array('latitude')),
     'location_longitude_dms' => array('arguments' => array('longitude')),
-    'location_map_link_options' => array('variables' => array('form')),
+    'location_map_link_options' => array('render element' => 'form'),
     'location_geocoding_options' => array('variables' => array('form')),
     'location_element' => array('arguments' => array('element')),
     'location_distance' => array('template' => 'location_distance', 'arguments' => array('distance' => 0, 'units' => 'km')),
